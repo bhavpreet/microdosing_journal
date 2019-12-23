@@ -7,6 +7,7 @@ import 'package:microdosing_journal/icons/dropper_icon_icons.dart';
 import 'package:redux/redux.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:microdosing_journal/model/model.dart';
+import 'package:random_color/random_color.dart';
 
 import 'lineChart.dart';
 
@@ -165,7 +166,6 @@ class _PlotDataState extends State<PlotData> {
   @override
   Widget build(BuildContext context) {
     final _now = DateTime.now();
-
     return FutureBuilder(
         future: widget.store.state.db.then((db) => getMeasurements(db)),
         builder: (context, snapshot) {
@@ -198,10 +198,10 @@ class _PlotDataState extends State<PlotData> {
                 footerValueBuilder: (double value) {
                   return "${value}\ndays";
                 },
-                bezierChartScale: BezierChartScale.HOURLY,
+                bezierChartScale: BezierChartScale.WEEKLY,
                 bezierChartAggregation: BezierChartAggregation.AVERAGE,
-                fromDate: _now.subtract(Duration(days: 1)),
-                toDate: _now.add(Duration(days: 1)),
+                fromDate: _now.subtract(Duration(days: 40)),
+                toDate: _now,
                 selectedDate: _now,
                 // xAxisCustomValues: const [0, 3, 10, 15, 20, 25, 30, 35],
                 // xAxisCustomValues:  [for (Measurements m in lm) m.timestamp],
@@ -212,10 +212,19 @@ class _PlotDataState extends State<PlotData> {
                     "Stress",
                     "Attention"
                   ])
-                    BezierLine(label: _e, data: [
-                      for (Measurements m in lm)
-                        DataPoint<DateTime>(value: m.m[_e], xAxis: m.timestamp)
-                    ]),
+                    BezierLine(
+                        label: _e,
+                        lineColor: RandomColor().randomColor(
+                            colorSaturation: ColorSaturation.mediumSaturation),
+                        onMissingValue: (dateTime) {
+                          return 2.5;
+                        },
+                        data: [
+                          for (Measurements m in lm)
+                            DataPoint<DateTime>(
+                                value: double.parse(m.m[_e].toStringAsFixed(1)),
+                                xAxis: m.timestamp)
+                        ]),
                   // BezierLine(
                   //   label: "Anxiety",
                   //   lineColor: Colors.blue,
@@ -289,6 +298,7 @@ class _PlotDataState extends State<PlotData> {
                   snap: false,
                   // showVerticalIndicator: true,
                   verticalIndicatorFixedPosition: false,
+                  displayDataPointWhenNoValue: false,
                   // contentWidth: MediaQuery.of(context).size.width / 2,
                   // backgroundColor: Colors.red,
                 ),

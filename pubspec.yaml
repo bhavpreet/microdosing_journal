@@ -28,6 +28,7 @@ dependencies:
   flutter_redux_dev_tools: ^0.3.0
   path_provider: ^1.4.5
   json_annotation: ^3.0.0
+  random_color: ^1.0.3
   sembast: ^2.1.2
   charts_flutter: ^0.8.1
   bezier_chart: ^1.0.15

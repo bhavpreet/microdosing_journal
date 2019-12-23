@@ -46,13 +46,15 @@ StoreRef measurementsRef() {
 Future<List> getMeasurements(Database db, [String key]) async {
   // List<Measurements> l = [];
   var st = measurementsRef();
-  var finder = Finder(filter: Filter.custom((matches) {
-    if (key != null) {
-      var _m = Measurements.fromJson(matches.value);
-      return _m.m.containsKey(key);
-    }
-    return true;
-  }));
+  var finder = Finder(
+      filter: Filter.custom((matches) {
+        if (key != null) {
+          var _m = Measurements.fromJson(matches.value);
+          return _m.m.containsKey(key);
+        }
+        return true;
+      }),
+      sortOrders: [SortOrder('timestamp')]);
   // st.find(db, finder: finder);
   print("getMeasurements returning st.find");
   return st.find(db, finder: finder);
