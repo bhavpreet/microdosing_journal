@@ -59,3 +59,15 @@ Future<List> getMeasurements(Database db, [String key]) async {
   print("getMeasurements returning st.find");
   return st.find(db, finder: finder);
 }
+
+Future<List> getDosages(Database db) async {
+  // List<Measurements> l = [];
+  var st = doseRef();
+  var finder = Finder(
+      filter: Filter.custom((matches) {
+        return true;
+      }),
+      sortOrders: [SortOrder('timestamp')]);
+  // st.find(db, finder: finder);
+  return st.find(db, finder: finder);
+}

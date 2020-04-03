@@ -123,11 +123,11 @@ class PlotTimeSeries extends StatelessWidget {
     DateTime _now = DateTime.now();
     var rng = new Random(DateTime.now().second);
     final data = [
-      for (int i = 0; i < 300; i++)
-        new TimeSeriesSales(_now.add(Duration(hours: i)), rng.nextInt(i + 1)),
-      // new TimeSeriesSales(new DateTime(2017, 9, 26), 25),
-      // new TimeSeriesSales(new DateTime(2017, 10, 3), 100),
-      // new TimeSeriesSales(new DateTime(2017, 10, 10), 75),
+      // for (int i = 0; i < 300; i++)
+      //   new TimeSeriesSales(_now.add(Duration(hours: i)), rng.nextInt(i + 1)),
+      new TimeSeriesSales(new DateTime(2017, 9, 26), 25),
+      new TimeSeriesSales(new DateTime(2017, 10, 3), 100),
+      new TimeSeriesSales(new DateTime(2017, 10, 10), 75),
     ];
 
     return [
@@ -163,6 +163,22 @@ class PlotData extends StatefulWidget {
 }
 
 class _PlotDataState extends State<PlotData> {
+  List<Dose> dosages;
+  @override
+  void initState() {
+    widget.store.state.db.then((db) {
+      var _dosages = getDosages(db);
+      _dosages.then((_dosages) {
+        for (var d in _dosages) {
+          dosages.add(Dose.fromJson(d));
+          print("Dosages : ${d.toString()}");
+        }
+      });
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final _now = DateTime.now();
@@ -206,7 +222,9 @@ class _PlotDataState extends State<PlotData> {
                 // xAxisCustomValues: const [0, 3, 10, 15, 20, 25, 30, 35],
                 // xAxisCustomValues:  [for (Measurements m in lm) m.timestamp],
                 series: [
+                  // for (var _d in this.dosages) BezierLine(),
                   for (var _e in [
+                    // TODO: These should come from DB and should be mutable to addition.
                     "Depression",
                     "Anxiety",
                     "Stress",
